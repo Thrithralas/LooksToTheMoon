@@ -43,7 +43,7 @@ namespace LooksToTheMoon {
                 CaseSensitiveCommands = false
             });
             await CommandService.AddModulesAsync(Assembly.GetEntryAssembly(), ServiceProvider);
-
+            await Client.SetActivityAsync(new Game("with her Neurons", ActivityType.Playing, ActivityProperties.Instance));
             await Task.Delay(-1);
 
         }
