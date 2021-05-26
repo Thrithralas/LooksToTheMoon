@@ -17,12 +17,14 @@ namespace LooksToTheMoon.SchedulingService {
         public ulong OwnerID { get; init; }
         private bool _disposed;
         
-        public Guid Checksum => ISchedule.GenerateChecksum();
+        public Guid Checksum { get; } = ISchedule.GenerateChecksum();
 
         private Timer _timer;
+        private DateTime _started;
 
         public void Start() {
-            _timer = new Timer {Interval = (ScheduleAt - DateTime.Now)?.TotalMilliseconds ?? ScheduleAfter?.TotalMilliseconds ?? 0};
+            _started = DateTime.Now;
+            _timer = new Timer {Interval = (ScheduleAt - _started)?.TotalMilliseconds ?? ScheduleAfter?.TotalMilliseconds ?? 0};
             _timer.Elapsed += OnTimerExpire;
             _timer.Start();
         }
@@ -31,6 +33,10 @@ namespace LooksToTheMoon.SchedulingService {
             _timer.Stop();
             _timer.Elapsed -= OnTimerExpire;
             Dispose();
+        }
+
+        public TimeSpan TimeLeft() {
+            return ScheduleAfter is null ? ScheduleAt!.Value - DateTime.Now : _started + ScheduleAfter.Value - DateTime.Now;
         }
 
 

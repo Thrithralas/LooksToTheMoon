@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Discord;
 using Discord.Commands;
 using LooksToTheMoon.SchedulingService;
+
+using static LooksToTheMoon.SchedulingService.StaticScheduleCollection;
 
 namespace LooksToTheMoon.Commands {
     public class Scheduling : ModuleBase {
@@ -103,9 +106,34 @@ namespace LooksToTheMoon.Commands {
             settingCollection.ForEach(setting => settings.Merge(setting));
             
             ISchedule schedule = settings.ToSchedule();
-            StaticScheduleCollection.Schedules.Add(schedule);
+            Schedules.Add(schedule);
             schedule.Start();
+
+            await ReplyAsync("Alright! Scheduling is underway, I'll notify you when the event should start!");
+
+        }
+
+        [Command("list schedules")]
+        [Alias("show me the schedules", "list me the schedules", "show schedules")]
+        public async Task ListSchedules() {
+
+            EmbedBuilder builder = new EmbedBuilder()
+                .WithAuthor("Schedule Listing", CommonUtilities.AvatarURL)
+                .WithColor(CommonUtilities.EmbedColour)
+                .WithFooter($"Command issued by {Context.User.Username}#{Context.User.DiscriminatorValue}", Context.User.GetAvatarUrl());
+
+            StringBuilder embedText = new StringBuilder();
+            foreach (ISchedule schedule in Schedules) {
+                
+                string scheduleType = schedule is OneTimeSchedule ? "One Time Schedule" : "NULL";
+                string timestamp = schedule.TimeLeft().FormatTimeSpan(false, false);
+
+                embedText.AppendLine($"{schedule.Name} - Hosted by {Core.Client.GetUser(schedule.OwnerID).Username}. In {timestamp}");
+            }
+
+            builder.WithDescription(embedText.ToString());
             
+            await ReplyAsync(embed: builder.Build());
         }
         
     }

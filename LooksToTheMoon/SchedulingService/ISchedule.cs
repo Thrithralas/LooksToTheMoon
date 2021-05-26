@@ -4,6 +4,7 @@ namespace LooksToTheMoon.SchedulingService {
     public interface ISchedule : IDisposable {
         public void Start();
         public void Stop();
+        public TimeSpan TimeLeft();
         public Guid Checksum { get; }
         public DateTime? ScheduleAt { get; init; }
         public TimeSpan? ScheduleAfter { get; init; }

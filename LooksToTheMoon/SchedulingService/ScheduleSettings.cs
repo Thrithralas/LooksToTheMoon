@@ -28,7 +28,7 @@ namespace LooksToTheMoon.SchedulingService {
             ISchedule schedule = null;
             if (RepeatInterval is null) {
                 
-                schedule = new OneTimeSchedule {GuildID = Guild, ChannelID = Channel, ScheduleAfter = After, ScheduleAt = TimeStamp, Description = Description, OwnerID = Owner};
+                schedule = new OneTimeSchedule {GuildID = Guild, ChannelID = Channel, ScheduleAfter = After, ScheduleAt = TimeStamp, Description = Description, OwnerID = Owner, Name = Name};
                 SocketGuild socketGuild = Core.Client.GetGuild(Guild);
                 
                 SocketRole monkLand = socketGuild.GetRole(AppConfiguration.MonklandRoleID);
